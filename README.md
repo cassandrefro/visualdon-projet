@@ -12,19 +12,33 @@ Chaque jeu vidéo et ses personnages ont été recherchés individuellement pour
 Le jeu de données est au format csv et les données sont de type quantitatif, temporel et qualitatif.
 
 Title (str) - the title of the game
+
 Release (Date) - The date when the game was first released.
+
 Series (str) - Series where the game belongs, if any.
+
 Genre (str) - The main genre of the game
+
 Subgenre (str) - Main subgenre of the game
+
 Developer (str) - Game developer
+
 Publisher (str) - Game publisher
+
 Country (str) - Country of the game developer
+
 Customization (str) - If the game offers the option of customizing or not the character. It contains three values: ‘Yes’, ‘No’, and ‘Non-Binary’.
+
 Protagonist (int) - number of protagonists for that game.
+
 Protagonist_non_male (int) - number of non-male protagonists. This is, females, non-binaries, and customizable characters.
+
 Relevant_males (int) - male characters in the game.
+
 Relevant_no_males (int) - non-male characters in the game
+
 Percentage_non_male (float) - the percentage of non-male characters
+
 Criteria (str) - criteria for selecting the game. Contains three values:
 
     - ‘TR’ - top rated
@@ -39,14 +53,23 @@ Director (str) - game director gender. Can contain 4 values:
     - ‘B’ - both in case there is more than one director of different genders.
 
 Total_team (int) - number of main people involved in the game creation. Includes main programmers, developers, directors, producers, artists, and designers.
+
 Female_team (int) - number of team integrants that are female.
+
 Team_percentage (float) - the percentage of women in the team.
+
 Metacritic (float) - punctuation out of ten given to the game by Metacritic.
+
 Destructoid (float) - punctuation out of ten given to the game by Destructoid.
+
 IGN (float) - punctuation out of ten given to the game by IGN.
+
 GameSpot (float) - punctuation out of ten given to the game by GameSpot.
+
 Avg_reviews (float) - the average of the four previous columns.
+
 Name (str) - the name of the character.
+
 Gender (str) - the gender of the character. It contains 4 different values:
 
     - ‘Female’ - characters identified as females in the game. They are addressed with the
@@ -63,6 +86,7 @@ Gender (str) - the gender of the character. It contains 4 different values:
 Game (str) - foreign key - the Game_Id from the ‘Games’ data frame according to the character’s game.
 
 Age (str) - the age of the character during the game events.
+
 Age_range (str) - a ranking categorization of the ages. The values are as follows:
 
     - Infant - 0 to 5 years old
