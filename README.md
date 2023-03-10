@@ -2,9 +2,9 @@
 
 **Contexte :** D'où viennent les données, qui les a créées et dans quel contexte ?
 
-Le jeu de données provient de Kaggle et l'auteur est un data analyst nommé Brisa P.
+Le jeu de données provient de Kaggle et l'auteur.e est un.e data analyst nommé.e Brisa P.
 Les données ont été extraites de la recherche de différentes sources dont Wikipedia, Metacritic, IGN, Destructoid, et les sites web des éditeurs et développeurs des jeux.
-Chaque jeu vidéo et ses personnages ont été recherchés individuellement pour tirer des conclusions. Ce jeu de données contient des données sur 64 jeux vidéos sortis entre 2012 et 2022. Les jeux ont été choisis comme étant des best-selling ou des top-rating de l'année. Il y a au moins 5 jeux par année et des informations sur les personnages les plus pertinents de la narration. Le but de ce jeu de données est de compiler les informations des jeux et de leurs personnages pour annalyser comment les genres sont représentés.
+Chaque jeu vidéo et ses personnages ont été recherchés individuellement pour tirer des conclusions. Ce jeu de données contient des données sur 64 jeux vidéos sortis entre 2012 et 2022. Les jeux ont été choisis comme étant des best-selling ou des top-rating de l'année. Il y a au moins 5 jeux par année et des informations sur les personnages les plus pertinents de la narration. Le but de ce jeu de données est de ranssembler les informations des jeux et de leurs personnages pour annalyser comment les genres sont représentés.
 
 
 **Description :** Comment sont structurées les données ? Parler du format, des attributs et du type de données.
