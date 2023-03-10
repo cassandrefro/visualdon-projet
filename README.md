@@ -1,16 +1,15 @@
 # visualdon-projet
 
-Contexte : d'où viennent les données, qui les a créées et dans quel contexte ?
+**Contexte :** D'où viennent les données, qui les a créées et dans quel contexte ?
 
 Le jeu de données provient de Kaggle et l'auteur est un data analyst nommé Brisa P.
 Les données ont été extraites de la recherche de différentes sources dont Wikipedia, Metacritic, IGN, Destructoid, et les sites web des éditeurs et développeurs des jeux.
 Chaque jeu vidéo et ses personnages ont été recherchés individuellement pour tirer des conclusions. Ce jeu de données contient des données sur 64 jeux vidéos sortis entre 2012 et 2022. Les jeux ont été choisis comme étant des best-selling ou des top-rating de l'année. Il y a au moins 5 jeux par année et des informations sur les personnages les plus pertinents de la narration. Le but de ce jeu de données est de compiler les informations des jeux et de leurs personnages pour annalyser comment les genres sont représentés.
 
-Description Comment sont structurées les données ? Parler du format, des attributs et du type de données.
 
-Les données dont au format csv.
+**Description :** Comment sont structurées les données ? Parler du format, des attributs et du type de données.
 
-Les données sont de type quantitatif, temporel et qualitatif.
+Le jeu de données est au format csv et les données sont de type quantitatif, temporel et qualitatif.
 
 Title (str) - the title of the game
 Release (Date) - The date when the game was first released.
@@ -60,8 +59,8 @@ Gender (str) - the gender of the character. It contains 4 different values:
     pronouns they/them.
     - ‘Custom’ - those characters that the game offers the option to customize their gender. They
     are addressed according to the gender chosen by the player.
-    Game (str) - foreign key - the Game_Id from the ‘Games’ data frame according to the character’s
-    game.
+    
+Game (str) - foreign key - the Game_Id from the ‘Games’ data frame according to the character’s game.
 
 Age (str) - the age of the character during the game events.
 Age_range (str) - a ranking categorization of the ages. The values are as follows:
@@ -90,16 +89,15 @@ Relevance (str) - the relevance of a character in a game and in relation to the 
 
     - PA - protagonist - the most important person(s) in the game. In case of is more than one both of them must have the same importance in the plot.
     - DA - deuteragonist. The second most important character(s) in the plot. In case of being more than one, both must have the same relevance.
-    - SK - sidekick. Those characters accompany the protagonist during all, or most of, the story. They offer constant support to the protagonist by giving advice, battle support, exploration aid, etc. They differ from the deuteragonist as they usually have little to no relevance in the
-    storyline.
+    - SK - sidekick. Those characters accompany the protagonist during all, or most of, the story. They offer constant support to the protagonist by giving advice, battle support, exploration aid, etc. They differ from the deuteragonist as they usually have little to no relevance in the storyline.
     - MC - the main character. A character that is rele vant throughout all, or most part of, the story. This category can include antagonists.
     - SC - secondary character. A character that is important in the storyline but whose relevance is occasional, be it because their plot just lasts a short amount of time or because they are mentioned throughout the game but barely appear in-game. This category can include antagonists.
     - MA - main antagonist. The main antagonist(s) of the game. It is relevant throughout the game.
 
-But: qu'est-ce que vous voulez découvrir ? Des tendances ? Vous voulez explorer ou expliquer?
+**But :** Qu'est-ce que vous voulez découvrir ? Des tendances ? Vous voulez explorer ou expliquer?
 
 Nous voulons explorer la diversité de genre dans les jeux vidéos, la manière dont les personnages sont représentés. Nous souhaitons voir si la représentation des femmes s'est améliorée au fil du temps et si cela change en fonction du contexte ou des caractéristiques du jeu.
 
-Références: Qui d'autre dans le web ou dans la recherche a utilisé ces données ? Dans quel but ?
+**Références :** Qui d'autre dans le web ou dans la recherche a utilisé ces données ? Dans quel but ?
 
 Les journalistes de jeux vidéos analysent ces données dans le but de sensibiliser et promouvoir les femmes dans les jeux vidéos.
