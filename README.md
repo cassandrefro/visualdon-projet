@@ -6,7 +6,6 @@ Le jeu de données provient de Kaggle et l'auteur.e est un.e data analyst nommé
 Les données ont été extraites de la recherche de différentes sources dont Wikipedia, Metacritic, IGN, Destructoid, et les sites web des éditeurs et développeurs des jeux.
 Chaque jeu vidéo et ses personnages ont été recherchés individuellement pour tirer des conclusions. Ce jeu de données contient des données sur 64 jeux vidéos sortis entre 2012 et 2022. Les jeux ont été choisis comme étant des best-selling ou des top-rating de l'année. Il y a au moins 5 jeux par année et des informations sur les personnages les plus pertinents de la narration. Le but de ce jeu de données est de ranssembler les informations des jeux et de leurs personnages pour annalyser comment les genres sont représentés.
 
-
 **Description :** Comment sont structurées les données ? Parler du format, des attributs et du type de données.
 
 Le jeu de données est au format csv et les données sont de type quantitatif, temporel et qualitatif.
@@ -82,7 +81,7 @@ Gender (str) - the gender of the character. It contains 4 different values:
     pronouns they/them.
     - ‘Custom’ - those characters that the game offers the option to customize their gender. They
     are addressed according to the gender chosen by the player.
-    
+
 Game (str) - foreign key - the Game_Id from the ‘Games’ data frame according to the character’s game.
 
 Age (str) - the age of the character during the game events.
@@ -121,6 +120,7 @@ Relevance (str) - the relevance of a character in a game and in relation to the 
 **But :** Qu'est-ce que vous voulez découvrir ? Des tendances ? Vous voulez explorer ou expliquer?
 
 Nous voulons explorer la diversité de genre dans les jeux vidéos, la manière dont les personnages sont représentés. Nous souhaitons voir si la représentation des femmes s'est améliorée au fil du temps et si cela change en fonction du contexte ou des caractéristiques du jeu.
+Wireframe : https://github.com/cassandrefro/visualdon-projet/blob/main/Wireframe.pdf
 
 **Références :** Qui d'autre dans le web ou dans la recherche a utilisé ces données ? Dans quel but ?
 
