@@ -72,13 +72,13 @@ csv("/data/dataGenderRepresentation.csv")
     //const indice = 0;
     //const xPosition = step * indice;
     //console.log(gamesByYear);
-    gamesByYear.forEach((game) => {
+    gamesByYear.forEach((game, i) => {
       console.log(game);
       //xPosition = step * indice;
 
       groupe1
         .append("circle")
-        .attr("cx", "50")
+        .attr("cx", 50 * i)
         .attr("cy", "50")
         .attr("r", "40")
         .attr("id", game.id);
