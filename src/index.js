@@ -82,7 +82,7 @@ csv("/data/dataGenderRepresentation.csv")
         .attr("cy", "50")
         .attr("r", "40")
         .attr("id", game.id);
-      //indice++;
+      indice++;
       //select("body").append("div").attr("id", game.id);
     });
   })
