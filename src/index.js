@@ -89,3 +89,5 @@ csv("/data/dataGenderRepresentation.csv")
   .catch(function (error) {
     // Gérer les erreurs ici
   });
+
+export { csv };
