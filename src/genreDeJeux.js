@@ -139,19 +139,35 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       }
     });
 
-  // dans chaque cercle mettre le sous genre de jeux
-  svg
-    .selectAll("text")
+  // dans chque cercle mettre un rond noir en fonction du nombre de femme dans l'équipe de devloppement du jeux si il y a un femme le rond est de taille 1 si 2 femme de taille 2 et ainsi de suite, si il y a pas de femme le rond est de taille 0
+  const femaleTeamCircles = svg
+    .selectAll("circle.female-team")
+    .data(games.filter((d) => d.femaleteam > 0))
+    .enter()
+    .append("circle")
+    .attr("class", "female-team")
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
+    .attr("r", (d) => d.femaleteam * 3)
+    .attr("fill", "black")
+    .attr("stroke", "black");
+
+  const gameCircles = svg
+    .selectAll("circle.game")
     .data(games)
     .enter()
-    .append("text")
-    .attr("x", (d) => d.x)
-    .attr("y", (d) => d.y)
-    .attr("text-anchor", "middle")
-    .attr("font-size", "8px")
+    .append("circle")
+    .attr("class", "game")
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
+    .attr("r", (d) => (d.femaleteam > 0 ? d.femaleteam : 0))
     .attr("fill", "black")
-    .text((d) => d.genre);
-  //dans chaque cercle on met un cercle noir, on compte le nombre de personne dans la team et en fonction du nomnre de feme on met un cercle noir de la taille du nombre de femme dans la team
+    .attr("stroke", "black");
+
+  gameCircles
+    .filter((d) => d.femaleteam > 0)
+    .raise()
+    .attr("stroke-width", 2);
 
   header
     .append("button")
@@ -173,7 +189,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .on("click", function () {
       // Fonction à exécuter lors du clic sur le bouton Genre
 
-      // si on clique sur le bouton genre alors tout les jeux sont affichés en mouvement
+      // si on clique sur le bouton genre alors tout les jeux sont affichés
       svg.selectAll("circle").attr("display", "block");
       svg.selectAll("text").attr("display", "block");
     });
@@ -212,12 +228,13 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
 
     const simulation = d3
       .forceSimulation(games)
-      .force("x", d3.forceX(center.x).strength(0.2))
-      .force("y", d3.forceY(center.y).strength(0.2))
+      .force("charge", d3.forceManyBody().strength(0.01))
+      .force("center", d3.forceCenter(center.x, center.y))
       .force(
         "collide",
         d3.forceCollide().radius((d) => {
-          return Math.sqrt(d.characters.length) * 5 + margin; // ajout de la marge
+          return radiusScale(d.review);
+          // return Math.sqrt(d.characters.length) * 5 + margin; // ajout de la marge
         })
       )
       .stop();
@@ -225,7 +242,6 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     for (let i = 0; i < 120; i++) {
       simulation.tick();
     }
-
     svg
       .selectAll("circle")
       .transition()
