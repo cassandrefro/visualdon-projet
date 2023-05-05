@@ -29,7 +29,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       release: new Date(editedRelease),
       country: gameData.Country,
       review: gameData.Avg_Reviews,
-      genre: gameData["Sub.genre"],
+      genre: gameData["Genre"], //["Sub.genre"],
       characters: filteredCharacters,
       Title: gameData.Title,
       femaleteam: gameData.female_team,
@@ -69,6 +69,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .append("div")
     .attr("class", "header")
     .style("display", "flex");
+
   const maxReview = d3.max(games, (d) => d.review);
   const minReview = d3.min(games, (d) => d.review);
   const maxRadius = 60;
@@ -86,12 +87,26 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .attr("width", 2000)
     .attr("height", 850);
 
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
+
+  const positions = subGenreObj.map((subGenre) => {
+    return {
+      subGenre: subGenre.subGenre,
+      x: d3.randomUniform(0, width)(),
+      y: d3.randomUniform(0, height)(),
+    };
+  });
+
+  games.forEach((game) => {
+    const position = positions.find((pos) => pos.subGenre === game.genre);
+    game.position = position;
+  });
+
   const center = {
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
   };
-
-  const margin = 30; // ajout de la marge
 
   const simulation = d3
     .forceSimulation(games)
@@ -99,10 +114,23 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .force("center", d3.forceCenter(center.x, center.y))
     .force(
       "collide",
-      d3.forceCollide().radius((d) => {
-        return radiusScale(d.review);
-        // return Math.sqrt(d.characters.length) * 5 + margin; // ajout de la marge
-      })
+      d3
+        .forceCollide()
+        .radius((d) => {
+          return radiusScale(d.review);
+        })
+        .strength(0.5)
+    )
+    .force(
+      "radial",
+      d3
+        .forceRadial()
+        .radius(function (d) {
+          return 0;
+        })
+        .strength(0.01)
+        .x(center.x)
+        .y(center.y)
     )
     .stop();
 
@@ -117,10 +145,9 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .data(games)
     .enter()
     .append("circle")
-    .attr("cx", (d) => d.x)
-    .attr("cy", (d) => d.y)
+    .attr("cx", (d) => d.position.x)
+    .attr("cy", (d) => d.position.y)
     .attr("r", (d) => radiusScale(d.review))
-    /*.attr("r", (d) => radiusScale(d.characters.length))*/
     .attr("fill", "white")
     .attr("stroke", (d) => {
       const characters = d.characters;
@@ -256,89 +283,15 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y);
 
-    // additionner tout les personnages de chaque jeux et faire un pourcentage par rapport au nombre total de personnages femme et homme de tous les jeux de ce sous genre de jeux
+    //faire que les jeux aient un mouvement sur la gauche a chque clique sur un sous genre de jeux
+    svg
+      .selectAll("circle")
+      .transition()
+      .duration(600)
+      .attr("cx", (d) => d.x - 200)
+      .attr("cy", (d) => d.y);
 
-    const marginB = { top: 20, right: 20, bottom: 30, left: 40 };
-    const widthB = 960 - marginB.left - marginB.right;
-    const heightB = 500 - marginB.top - marginB.bottom;
-
-    //subGenre = d3.select(this).text();
-    const data = games.filter((d) => d.genre === subGenre);
-    const totalCharacters = data.reduce((acc, d) => {
-      return acc + d.characters.length;
-    }, 0);
-    const totalFemaleCharacters = data.reduce((acc, d) => {
-      return (
-        acc + d.characters.filter((char) => char.gender === "female").length
-      );
-    }, 0);
-    const totalMaleCharacters = data.reduce((acc, d) => {
-      return acc + d.characters.filter((char) => char.gender === "male").length;
-    }, 0);
-    const dataBar = [
-      {
-        genre: "female",
-        value: (totalFemaleCharacters / totalCharacters) * 100,
-      },
-      { genre: "male", value: (totalMaleCharacters / totalCharacters) * 100 },
-    ];
-
-    const svgBar = d3
-      .select("body")
-      .append("svg")
-      .attr("width", widthB + marginB.left + marginB.right)
-      .attr("height", heightB + marginB.top + marginB.bottom)
-      .append("g")
-      .attr("transform", "translate(" + marginB.left + "," + marginB.top + ")");
-
-    const x = d3.scaleBand().rangeRound([0, widthB]).padding(0.1);
-    const y = d3.scaleLinear().rangeRound([heightB, 0]);
-
-    x.domain(
-      dataBar.map(function (d) {
-        return d.genre;
-      })
-    );
-    y.domain([
-      0,
-      d3.max(dataBar, function (d) {
-        return d.value;
-      }),
-    ]);
-
-    console.log(data);
-
-    // Dessin des barres du graphique en utilisant les données de dataBar
-    svgBar
-      .selectAll("rect")
-      .data(dataBar)
-      .enter()
-      .append("rect")
-      .attr("x", function (d) {
-        return x(d.genre);
-      })
-      .attr("y", function (d) {
-        return y(d.value);
-      })
-      .attr("width", x.bandwidth())
-      .attr("height", function (d) {
-        return heightB - y(d.value);
-      })
-      .attr("fill", function (d) {
-        if (d.genre === "female") {
-          return "pink";
-        } else if (d.genre === "male") {
-          return "blue";
-        }
-      });
-
-    // Ajout des axes x et y au graphique
-    svgBar
-      .append("g")
-      .attr("transform", "translate(0," + heightB + ")")
-      .call(d3.axisBottom(x));
-
-    svgBar.append("g").call(d3.axisLeft(y));
+    //
   });
 
   // lors d'un hover sur un cercle ou dans le cercle on affiche le nom du jeu et le nombre de personnage dans un label en fond noir et le texte en blanc
@@ -422,6 +375,4 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         .attr("x", (d) => d.x)
         .attr("y", (d) => d.y);
     });
-
-  // on affiche le graphique en barre
 });
