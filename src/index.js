@@ -2,7 +2,7 @@ import { csv } from "d3-fetch";
 import * as d3 from "d3";
 import { cleanData } from "./data";
 import { updateCircles, updateForce } from "./circles";
-//import { updateForceAnnee } from "./annee";
+import { updateCirclesAnnee } from "./annee";
 
 csv("/data/dataGenderRepresentation.csv").then(function (data) {
   //** GAMES DATA CLEANED **/
@@ -22,8 +22,8 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   const svg = d3
     .select("body")
     .append("svg")
-    .attr("width", 2000)
-    .attr("height", 650);
+    .attr("width", window.innerWidth)
+    .attr("height", window.innerHeight - 100);
 
   //Ajout footer
   const footer = d3
@@ -37,10 +37,8 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   //affichage par défaut
   let dataCircles = games; //unfiltered
   updateCircles(dataCircles, data, svg);
-  //updateForceAnnee(dataCircles);
-  //force année
-
   updateForce("Année", dataCircles, data, svg);
+  updateCirclesAnnee(games, svg); //ajout axe
 
   /** AFFICHAGE BUTTONS DANS FOOTER **/
 
@@ -85,7 +83,6 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
               break;
           }
           //On update les circles (force) suivant une "Année", un "Pays", ou un "Genre" spécifique
-          //updateCircles(dataCircles, data, svg);
           updateForce("transition", dataCircles, data, svg);
           //+graphiques
         });
@@ -100,12 +97,12 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   Object.keys(categories).forEach((categoryKey) => {
     header
       .append("button")
-      .text(categoryKey) //categories[categoryKey]
+      .text(categoryKey)
       .on("click", function () {
         //On affiche toutes les données games
         dataCircles = games;
-        updateCircles(dataCircles, data, svg);
         updateForce(categoryKey, dataCircles, data, svg);
+        console.log(categoryKey);
         //On update les boutons dans le footer
         updateFooter(categoryKey);
       });

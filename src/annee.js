@@ -18,7 +18,7 @@ const updateForceAnnee = (simulation, games) => {
 
   const maxYear = d3.max(games, (d) => d.release.getFullYear());
   const minYear = d3.min(games, (d) => d.release.getFullYear());
-  const maxX = 1500;
+  const maxX = innerWidth - 150;
   const minX = 150;
 
   const yearScale = d3
@@ -39,21 +39,52 @@ const updateForceAnnee = (simulation, games) => {
     //.force("charge", d3.forceManyBody().strength(10))
     .force(
       "x",
-      d3.forceX().x((d) => yearScale(d.release.getFullYear()))
+      d3
+        .forceX()
+        .x((d) => yearScale(d.release.getFullYear()))
+        .strength(0.1)
     )
-    .force(
-      "y",
-      d3.forceY().y(() => center.y)
-    )
-    .force(
+
+    .force("y", d3.forceY(center.y).strength(0.05));
+  /* .force(
       "collide",
       d3.forceCollide().radius((d) => {
         return radiusScale(d.review);
-      })
-    );
-
+      }) 
+    );*/
+  /*
   for (let i = 0; i < 120; i++) {
     simulation.tick();
-  }
+  }*/
 };
-export { updateForceAnnee };
+
+const updateCirclesAnnee = (games, svg) => {
+  //** SCALE YEAR **/
+
+  const maxYear = d3.max(games, (d) => d.release.getFullYear());
+  const minYear = d3.min(games, (d) => d.release.getFullYear());
+  const maxX = innerWidth - 150;
+  const minX = 150;
+
+  const yearScale = d3
+    .scaleLinear()
+    .domain([minYear, maxYear])
+    .range([minX, maxX]);
+
+  const yearAxis = d3.axisBottom(yearScale).tickFormat(d3.format(""));
+  /*
+    .tickValues(
+      yearScale.domain().filter((d, i) => {
+        return i % 2 === 0;
+      })
+    )
+    .tickFormat((d) => d * 1000); // customAxisFormat(d));*/
+  svg
+    .append("g")
+    .attr("class", "yearAxis")
+    .attr("transform", "translate(0," + window.innerHeight / 2 + ")")
+    .style("z-index", "1000")
+    .call(yearAxis);
+};
+
+export { updateForceAnnee, updateCirclesAnnee };
