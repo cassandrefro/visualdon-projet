@@ -3,6 +3,7 @@ import { select } from "d3-selection";
 //import { csv } from "./index.js";
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
+import path from "path";
 
 csv("/data/dataGenderRepresentation.csv").then(function (data) {
   //** DATA INITIALIZED **/
@@ -29,7 +30,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       release: new Date(editedRelease),
       country: gameData.Country,
       review: gameData.Avg_Reviews,
-      genre: gameData["Genre"], //["Sub.genre"],
+      genre: gameData["Sub.genre"],
       characters: filteredCharacters,
       Title: gameData.Title,
       femaleteam: gameData.female_team,
@@ -62,6 +63,11 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     });
   });
 
+  // creer une position x et y pour chaque sous genre d'objet dans le svg
+  subGenreObj.forEach((subGenreObj, i) => {
+    subGenreObj.x = 100 + i * 200;
+    subGenreObj.y = 100;
+  });
   // afficher les objets
   console.log(subGenreObj);
   const header = d3
@@ -87,22 +93,6 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .attr("width", 2000)
     .attr("height", 850);
 
-  const width = +svg.attr("width");
-  const height = +svg.attr("height");
-
-  const positions = subGenreObj.map((subGenre) => {
-    return {
-      subGenre: subGenre.subGenre,
-      x: d3.randomUniform(0, width)(),
-      y: d3.randomUniform(0, height)(),
-    };
-  });
-
-  games.forEach((game) => {
-    const position = positions.find((pos) => pos.subGenre === game.genre);
-    game.position = position;
-  });
-
   const center = {
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
@@ -114,23 +104,10 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .force("center", d3.forceCenter(center.x, center.y))
     .force(
       "collide",
-      d3
-        .forceCollide()
-        .radius((d) => {
-          return radiusScale(d.review);
-        })
-        .strength(0.5)
-    )
-    .force(
-      "radial",
-      d3
-        .forceRadial()
-        .radius(function (d) {
-          return 0;
-        })
-        .strength(0.01)
-        .x(center.x)
-        .y(center.y)
+      d3.forceCollide().radius((d) => {
+        return radiusScale(d.review);
+        // return Math.sqrt(d.characters.length) * 5 + margin; // ajout de la marge
+      })
     )
     .stop();
 
@@ -145,8 +122,8 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .data(games)
     .enter()
     .append("circle")
-    .attr("cx", (d) => d.position.x)
-    .attr("cy", (d) => d.position.y)
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
     .attr("r", (d) => radiusScale(d.review))
     .attr("fill", "white")
     .attr("stroke", (d) => {
@@ -282,16 +259,6 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .duration(1000)
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y);
-
-    //faire que les jeux aient un mouvement sur la gauche a chque clique sur un sous genre de jeux
-    svg
-      .selectAll("circle")
-      .transition()
-      .duration(600)
-      .attr("cx", (d) => d.x - 200)
-      .attr("cy", (d) => d.y);
-
-    //
   });
 
   // lors d'un hover sur un cercle ou dans le cercle on affiche le nom du jeu et le nombre de personnage dans un label en fond noir et le texte en blanc
@@ -375,4 +342,28 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         .attr("x", (d) => d.x)
         .attr("y", (d) => d.y);
     });
+  const popup = d3
+    .select(".popup")
+    .style("display", "none")
+    .style("background-color", "white")
+    .style("width", "400px")
+    .style("height", "600px")
+    .style("position", "absolute")
+    .style("top", "50%")
+    .style("left", "50%")
+    .style("transform", "translate(-50%, -50%)")
+    .style("border", "1px solid black");
+
+  d3.select(".close").on("click", function () {
+    d3.select(".popup").style("display", "none");
+    svg.style("opacity", 1);
+  });
+
+  svg.selectAll("circle").on("click", function (event, d) {
+    d3.select(".popup").style("display", "block").style("z-index", 1000);
+    svg.style("opacity", 0.5);
+    d3.select(".popup h1").text(d.Title);
+    document.querySelector(".popup img").src = "img/" + d.id + ".jpg";
+    d3.select(".studio").text("Studio de développement : " + d.studio);
+  });
 });
