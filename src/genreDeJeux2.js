@@ -319,11 +319,11 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     // sélectionner le conteneur SVG pour les graphiques
     const svg = select("body")
       .append("svg")
-      .attr("width", 1000) // Augmenter la largeur pour accueillir les deux graphiques
+      .attr("width", 900) // Augmenter la largeur pour accueillir les deux graphiques
       .attr("height", 400)
       //centrer le svg dans la page web
       .append("g")
-      .attr("transform", "translate(100, 100)");
+      .attr("transform", "translate(50, 50)");
 
     // Ajouter le groupe pour le graphique donut
     const genderChart = svg
@@ -344,16 +344,24 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
 
     // ajouter des étiquettes pour le nombre de femmes et d'hommes
     g.append("text")
-      .text((d) => d.data.gender + " " + d.data.count + "%")
+      .text((d) => d.data.count + "%")
       .attr("transform", (d) => "translate(" + arc.centroid(d) + ")")
-      .attr("text-anchor", "middle");
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px");
 
     // ajouter au centre du graphique donut le nombre total de personnages
+
     genderChart
       .append("text")
-      .html(total + "\npersonnages")
-      .attr("transform", "translate(0, 0)")
+      .html("personnages")
+      .attr("transform", "translate(0, 10)")
       .attr("text-anchor", "middle");
+    genderChart
+      .append("text")
+      .html(total)
+      .attr("transform", "translate(0, -10)")
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px");
 
     const charUnknowwTab = [];
     const charAdultTab = [];
@@ -427,16 +435,16 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .attr("class", "bar")
       .attr("x", (d, i) => {
         if (i >= 4) {
-          return i * 70 + 310;
+          return i * 70 + 300;
         } else {
-          return i * 70;
+          return i * 70 - 10;
         }
       })
       .attr("y", (d) => yScale(d.count))
       .attr("width", 20)
       .attr("height", (d) => 200 - yScale(d.count))
       .attr("fill", "#FFEEEE");
-
+    // ajouter des labels en dessous des barres avec le nom de l'age au milieu de la barre
     svg
       .selectAll(".bar-label")
       .data(barData)
@@ -446,11 +454,13 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .attr("x", (d, i) => {
         if (i >= 4) {
           return i * 70 + 310;
-        } else {
+        } else if (i == 3) {
           return i * 70 + 10;
+        } else {
+          return i * 70;
         }
       })
-      .attr("y", 210)
+      .attr("y", 220)
       .attr("text-anchor", "middle")
       .text((d) => d.age);
 
@@ -465,7 +475,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         if (i >= 4) {
           return i * 70 + 310;
         } else {
-          return i * 70 + 10;
+          return i * 70;
         }
       })
       .attr("y", (d) => yScale(d.count) - 5)
