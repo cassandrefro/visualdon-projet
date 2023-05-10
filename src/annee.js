@@ -83,7 +83,7 @@ const updateCirclesAnnee = (games, svg) => {
     .append("g")
     .attr("class", "yearAxis")
     .attr("transform", "translate(0," + window.innerHeight / 2 + ")")
-    .style("z-index", "1000")
+    .style("z-index", 1000)
     .call(yearAxis);
 };
 

@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { cleanData } from "./data";
 import { updateCircles, updateForce } from "./circles";
 import { updateCirclesAnnee } from "./annee";
+import { createGenderAgeCharts } from "./graph";
 
 csv("/data/dataGenderRepresentation.csv").then(function (data) {
   //** GAMES DATA CLEANED **/
@@ -18,12 +19,44 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .attr("class", "header")
     .style("display", "flex");
 
-  //Ajout svg
+  //Ajout svg circles
   const svg = d3
     .select("body")
     .append("svg")
     .attr("width", window.innerWidth)
     .attr("height", window.innerHeight - 100);
+
+  //Ajout svg graph
+  d3.select("body")
+    .append("div")
+    .attr("class", "graph")
+    .style("display", "none")
+    .style("background-color", "white")
+    .style("opacity", 0)
+    .attr("width", "900px")
+    .attr("height", "400px")
+    .style("position", "absolute")
+    .style("top", "50%")
+    .style("left", "35%")
+    .style("transform", "translate(0, -50%)")
+    .style("border", "1px solid black");
+
+  //Ajout popup
+  d3.select(".popup")
+    .style("display", "none")
+    .style("background-color", "white")
+    .style("width", "400px")
+    .style("height", "600px")
+    .style("position", "absolute")
+    .style("top", "50%")
+    .style("left", "50%")
+    .style("transform", "translate(-50%, -50%)")
+    .style("border", "1px solid black");
+
+  d3.select(".close").on("click", function () {
+    d3.select(".popup").style("display", "none");
+    svg.style("opacity", 1);
+  });
 
   //Ajout footer
   const footer = d3
@@ -85,6 +118,17 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
           //On update les circles (force) suivant une "Année", un "Pays", ou un "Genre" spécifique
           updateForce("transition", dataCircles, data, svg);
           //+graphiques
+          d3.select(".graph svg")
+            //.transition()
+            //.duration(800)
+            //.style("opacity", 0)
+            .remove();
+          createGenderAgeCharts(dataCircles);
+          d3.select(".graph")
+            .style("display", "block")
+            .transition()
+            .duration(400)
+            .style("opacity", 1);
         });
     });
   };
@@ -99,6 +143,13 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .append("button")
       .text(categoryKey)
       .on("click", function () {
+        //On cache les graphiques
+        d3.select(".graph")
+          .style("opacity", 1)
+          .transition()
+          .duration(600)
+          .style("opacity", 0)
+          .style("display", "none");
         //On affiche toutes les données games
         dataCircles = games;
         updateForce(categoryKey, dataCircles, data, svg);

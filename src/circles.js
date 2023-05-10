@@ -60,7 +60,15 @@ const updateCircles = (dataCircles, data, svg) => {
       } else {
         return "purple";
       }
+    })
+    .on("click", function (event, d) {
+      d3.select(".popup").style("display", "block").style("z-index", 1000);
+      svg.style("opacity", 0.5);
+      d3.select(".popup h1").text(d.Title);
+      document.querySelector(".popup img").src = "img/" + d.id + ".jpg";
+      d3.select(".studio").text("Studio de développement : " + d.studio);
     });
+
   return svg.selectAll("circle").data(dataCircles);
 };
 
