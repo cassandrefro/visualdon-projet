@@ -30,7 +30,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       release: new Date(editedRelease),
       country: gameData.Country,
       review: gameData.Avg_Reviews,
-      genre: gameData["Sub.genre"],
+      genre: gameData["Genre"],
       characters: filteredCharacters,
       Title: gameData.Title,
       femaleteam: gameData.female_team,
@@ -262,21 +262,35 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   });
 
   // lors d'un hover sur un cercle ou dans le cercle on affiche le nom du jeu et le nombre de personnage dans un label en fond noir et le texte en blanc
+  let tooltip = null;
+
   svg
     .selectAll("circle")
     .on("mouseover", function (event, d) {
       const x = event.pageX;
       const y = event.pageY;
-      d3.select("body")
+
+      // Supprime l'info-bulle précédente s'il y en a une
+      if (tooltip) {
+        tooltip.remove();
+      }
+
+      // Crée une nouvelle info-bulle
+      tooltip = d3
+        .select("body")
         .append("div")
         .attr("class", "tooltip")
         .style("position", "absolute")
         .style("top", y + "px")
         .style("left", x + "px")
-        .html(d.Title + "<br>Nombre de personnages: " + d.characters.length);
+        .html(d.Title);
     })
     .on("mouseout", function () {
-      d3.select(".tooltip").remove();
+      // Supprime l'info-bulle
+      if (tooltip) {
+        tooltip.remove();
+        tooltip = null;
+      }
     });
 
   // lors d'un hover sur un sous genre de jeux les cercles qui lui correspodend sont plus epais et les autres a leur epaisseur d'origine
@@ -352,18 +366,114 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .style("top", "50%")
     .style("left", "50%")
     .style("transform", "translate(-50%, -50%)")
-    .style("border", "1px solid black");
+    .style("border", "1px #929292 ")
+    .style("box-shadow", "0 0 10px rgba(0, 0, 0, 0.25)") // Ajoute un drop shadow
+    .style("border-radius", "20px"); // Ajoute des coins arrondis
 
   d3.select(".close").on("click", function () {
     d3.select(".popup").style("display", "none");
     svg.style("opacity", 1);
+    svg.style("pointer-events", "auto");
+    d3.select(".circle").remove();
+    d3.select(".personnages").selectAll("circle").remove();
   });
 
   svg.selectAll("circle").on("click", function (event, d) {
     d3.select(".popup").style("display", "block").style("z-index", 1000);
     svg.style("opacity", 0.5);
     d3.select(".popup h1").text(d.Title);
-    document.querySelector(".popup img").src = "img/" + d.id + ".jpg";
+
+    // Sélectionne l'élément img dans la popup
+    const popupImg = document.querySelector(".popup img");
+
+    // Définit la source de l'image
+    popupImg.src = "img/" + d.id + ".jpg";
+
+    // Ajoute le style CSS pour centrer l'image
+    popupImg.style.margin = "0 auto";
+    popupImg.style.display = "block";
+
+    // ne pas afficher le h2
+    d3.select(".popup h2").style("display", "none");
+
     d3.select(".studio").text("Studio de développement : " + d.studio);
+    const formatYear = d3.timeFormat("%Y");
+    d3.select(".date").text(
+      "Date de sortie : " + formatYear(new Date(d.release))
+    );
+    d3.select(".genre").text("Genre : " + d.genre);
+    d3.select(".pays").text("Pays : " + d.country);
+    d3.select(".femme").text(
+      "Nombre de femme dans l'équipe développement  : " +
+        d.femaleteam +
+        " sur " +
+        d.team
+    );
+    d3.select(".pers").text(
+      "Nombre de personnages dans le jeux : " + d.characters.length
+    );
+    d3.select(".notation")
+      .append("svg")
+      .attr("class", "circle")
+      .attr("width", 100)
+      .attr("height", 100)
+      .append("circle")
+      .attr("cx", 40)
+      .attr("cy", 40)
+      .attr("r", 30)
+      .style("fill", "transparent")
+      .style("stroke", "#EBEBEB")
+      .style("stroke-width", "2px");
+
+    d3.select(".notation svg")
+      .append("text")
+      .attr("x", 40)
+      .attr("y", 40)
+      .style("text-anchor", "middle")
+      .html("Note:")
+      .append("tspan")
+      .attr("x", 40)
+      .attr("dy", "1.9ex")
+      .text(d.review + "/10");
+
+    console.log(d.review);
+
+    d3.select(".personnages").html(""); // Supprime tous les éléments enfants de la classe "personnages"
+
+    const characters = d.characters.slice(0, 10);
+    const svg4 = d3
+      .select(".personnages")
+      .append("svg")
+      .attr("width", 400)
+      .attr("height", 50);
+
+    const maleCharacters = characters.filter((d) => d.Gender === "Male");
+    const femaleCharacters = characters.filter((d) => d.Gender === "Female");
+    const sortedCharacters = d3
+      .merge([femaleCharacters, maleCharacters])
+      .sort((b, a) => a.Gender.localeCompare(b.Gender));
+
+    const personnage = svg4
+      .selectAll("g")
+      .data(sortedCharacters)
+      .enter()
+      .append("g")
+      .attr("transform", (d, i) => `translate(${i * 30 + 20 + 35}, 30)`);
+
+    personnage
+      .append("circle")
+      .attr("r", 9)
+      .attr("fill", (d) => (d.Gender === "Male" ? "blue" : "pink"));
+
+    personnage
+      .append("circle")
+      .attr("r", 5)
+      .attr("fill", (d) => (d.Gender === "Male" ? "blue" : "pink"))
+      .attr("cy", -14);
+
+    console.log(sortedCharacters);
+
+    // Empêche le clic sur les autres cercles
+    svg.style("pointer-events", "none");
   });
 });
