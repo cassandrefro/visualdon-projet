@@ -443,6 +443,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .attr("y", (d) => yScale(d.count))
       .attr("width", 20)
       .attr("height", (d) => 200 - yScale(d.count))
+      .attr("rx", 10)
       .attr("fill", "#FFEEEE");
     // ajouter des labels en dessous des barres avec le nom de l'age au milieu de la barre
     svg
