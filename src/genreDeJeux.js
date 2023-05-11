@@ -178,6 +178,9 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .text("Année")
     .on("click", function () {
       // Fonction à exécuter lors du clic sur le bouton Année
+
+      header.selectAll("button").classed("active", false);
+      d3.select(this).classed("active", true);
     });
 
   header
@@ -185,6 +188,9 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .text("Pays")
     .on("click", function () {
       // Fonction à exécuter lors du clic sur le bouton Pays
+
+      header.selectAll("button").classed("active", false);
+      d3.select(this).classed("active", true);
     });
 
   header
@@ -196,6 +202,9 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       // si on clique sur le bouton genre alors tout les jeux sont affichés
       svg.selectAll("circle").attr("display", "block");
       svg.selectAll("text").attr("display", "block");
+
+      header.selectAll("button").classed("active", false);
+      d3.select(this).classed("active", true);
     });
 
   // des boutons pour chaque sous genre de jeux
@@ -219,6 +228,10 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   subGenreButtons.selectAll("button").on("click", function () {
     const subGenre = d3.select(this).text();
     console.log(subGenre);
+
+    // Changer la couleur du texte et du cercle sélectionné
+    subGenreButtons.selectAll("button").classed("active", false);
+    d3.select(this).classed("active", true);
     svg.selectAll("circle").attr("display", "none");
     svg.selectAll("text").attr("display", "none");
     svg
@@ -440,18 +453,28 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
 
     d3.select(".personnages").html(""); // Supprime tous les éléments enfants de la classe "personnages"
 
-    const characters = d.characters.slice(0, 10);
     const svg4 = d3
       .select(".personnages")
       .append("svg")
       .attr("width", 400)
       .attr("height", 50);
 
-    const maleCharacters = characters.filter((d) => d.Gender === "Male");
-    const femaleCharacters = characters.filter((d) => d.Gender === "Female");
-    const sortedCharacters = d3
-      .merge([femaleCharacters, maleCharacters])
-      .sort((b, a) => a.Gender.localeCompare(b.Gender));
+    const maleCharacters = d.characters.filter((d) => d.Gender === "Male");
+    const femaleCharacters = d.characters.filter((d) => d.Gender === "Female");
+    const totalCharacters = maleCharacters.length + femaleCharacters.length;
+    const numMaleCircles = Math.round(
+      (maleCharacters.length / totalCharacters) * 10
+    );
+    const numFemaleCircles = Math.round(
+      (femaleCharacters.length / totalCharacters) * 10
+    );
+    const sortedCharacters = [];
+    for (let i = 0; i < numFemaleCircles; i++) {
+      sortedCharacters.push({ Gender: "Female" });
+    }
+    for (let i = 0; i < numMaleCircles; i++) {
+      sortedCharacters.push({ Gender: "Male" });
+    }
 
     const personnage = svg4
       .selectAll("g")
@@ -465,15 +488,92 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .attr("r", 9)
       .attr("fill", (d) => (d.Gender === "Male" ? "blue" : "pink"));
 
-    personnage
-      .append("circle")
-      .attr("r", 5)
-      .attr("fill", (d) => (d.Gender === "Male" ? "blue" : "pink"))
-      .attr("cy", -14);
-
     console.log(sortedCharacters);
 
     // Empêche le clic sur les autres cercles
     svg.style("pointer-events", "none");
+  });
+
+  const blackCircle = document.getElementById("black-circle");
+  const popupLegend = document.getElementById("popup-legendes");
+  const closeButton = document.getElementById("close-button");
+
+  blackCircle.addEventListener("click", () => {
+    popupLegend.style.top = blackCircle.offsetTop + "px";
+    popupLegend.style.left = blackCircle.offsetLeft + "px";
+    popupLegend.style.display = "block";
+
+    //mettre le titre du popup
+    d3.select("#popup-legendes h2")
+      .text("Légendes")
+      .style("text-align", "center");
+    //centrer le titre du popup
+
+    d3.select(".taille-cercle")
+      .text("Taille des cercles en fonction de la note du jeu")
+      .insert("img", "p")
+      .attr("src", "img/taille.png");
+    d3.select(".taille-cercle").style("text-align", "center");
+    // placer l'image au dessus du texte
+    d3.select(".taille-cercle img")
+      .style("display", "block")
+      .style("margin", "0 auto");
+
+    d3.select(".cercle-jeux")
+      .text("Les cercle correspondent aux jeux")
+      .insert("img", "p")
+      .attr("src", "img/cercle.png");
+    d3.select(".cercle-jeux").style("text-align", "center");
+    // placer l'image au dessus du texte
+    d3.select(".cercle-jeux img")
+      .style("display", "block")
+      .style("margin", "0 auto");
+
+    d3.select(".couleur")
+      .text(
+        "Les couleurs représentent les personnages masculins et féminins dans le jeu : bleu pour les hommes, rose pour les femmes et violet pour les jeux mixtes."
+      )
+      .insert("img", "p")
+      .attr("src", "img/couleur.png");
+    d3.select(".couleur").style("text-align", "center");
+    // placer l'image au dessus du texte
+    d3.select(".couleur img")
+      .style("display", "block")
+      .style("margin", "0 auto");
+
+    d3.select(".rond-noir")
+      .text(
+        "Le rond noir correspond au nombre de femmes dans l'équipe développement du jeu."
+      )
+      .insert("img", "p")
+      .attr("src", "img/rondNoir.png");
+    d3.select(".rond-noir").style("text-align", "center");
+    // placer l'image au dessus du texte
+    d3.select(".rond-noir img")
+      .style("display", "block")
+      .style("margin", "0 auto");
+
+    d3.select(".personnage")
+      .text(
+        "Les personnages de chaque jeux sont les personnages importants dans l'histoire du jeu."
+      )
+      .insert("img", "p")
+      .attr("src", "img/personnage.png");
+    d3.select(".personnage").style("text-align", "center");
+    // placer l'image au dessus du texte
+    d3.select(".personnage img")
+      .style("display", "block")
+      .style("margin", "0 auto");
+  });
+
+  closeButton.addEventListener("click", () => {
+    popupLegend.style.display = "none";
+    // faire disparaitre le texte
+    // faire disparaitre le cercle
+    d3.select("#popup-legendes svg").remove();
+
+    //faire disparaître le rond noir
+    d3.select(".rond-noir p").remove();
+    d3.select(".rond-noir svg").remove();
   });
 });
