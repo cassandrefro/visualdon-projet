@@ -1,30 +1,15 @@
 import * as d3 from "d3";
 
-const updateForcePays = (simulation, games) => {
-  /** SCALE GAMES CIRCLES **/
+const updateForcePays = (simulation, games, svg) => {
+  /** SCALE PAYS **/
+  const pays = [...new Set(games.map((game) => game.country))].sort();
 
-  const maxReview = d3.max(games, (d) => d.review);
-  const minReview = d3.min(games, (d) => d.review);
-  const maxRadius = 60;
-  const minRadius = 20;
-
-  const radiusScale = d3
-    .scalePow()
-    .exponent(10)
-    .domain([minReview, maxReview])
-    .range([minRadius, maxRadius]);
-
-  //** SCALE YEAR **/
-
-  const maxYear = d3.max(games, (d) => d.release.getFullYear());
-  const minYear = d3.min(games, (d) => d.release.getFullYear());
-  const maxX = 1500;
-  const minX = 150;
-
-  const yearScale = d3
+  const countryScale = d3
     .scaleLinear()
-    .domain([minYear, maxYear])
-    .range([minX, maxX]);
+    .domain([0, 3])
+    .range([100, window.innerHeight - 220]);
+
+  //const countryX = [60,...center,window.innerWidth - 60]
 
   /** FORCE CENTER **/
 
@@ -33,27 +18,97 @@ const updateForcePays = (simulation, games) => {
     y: window.innerHeight / 2,
   };
 
-  //** FORCE ANNEE **/
+  //** FORCE PAYS **/
 
   simulation
     //.force("charge", d3.forceManyBody().strength(10))
-    .force(
-      "x",
-      d3.forceX().x((d) => d.index)
-    )
+
     .force(
       "y",
-      d3.forceY().y(() => center.y)
+      d3
+        .forceY((d) => {
+          if (pays.indexOf(d.country) <= 7) {
+            return countryScale(0);
+          } else if (pays.indexOf(d.country) <= 8) {
+            return countryScale(2);
+          } else if (pays.indexOf(d.country) == 12) {
+            return countryScale(2);
+          } else {
+            return countryScale(3) - 50;
+          }
+          //return pays.indexOf(d.country) <= 6 ? 100 : window.innerHeight - 300;
+        })
+        .strength(0.1)
     )
     .force(
-      "collide",
-      d3.forceCollide().radius((d) => {
-        return radiusScale(d.review);
-      })
+      "x",
+      d3
+        .forceX()
+        .x((d) => {
+          if (pays.indexOf(d.country) <= 7) {
+            return d3
+              .scaleLinear()
+              .domain([0, 7])
+              .range([0, window.innerWidth - 90])(pays.indexOf(d.country));
+          } else if (pays.indexOf(d.country) == 8) {
+            return 200;
+          } else if (pays.indexOf(d.country) == 12) {
+            return window.innerWidth - 200;
+          } else {
+            return d3
+              .scaleLinear()
+              .domain([9, 11])
+              .range([550, window.innerWidth - 550])(pays.indexOf(d.country));
+          }
+        })
+        .strength(0.05)
     );
 
-  for (let i = 0; i < 120; i++) {
-    simulation.tick();
-  }
+  //** LABELS **/
+  svg
+    .selectAll(".labels")
+    .data(pays)
+    .enter()
+    .append("g")
+    .attr("class", "labels")
+    .attr("transform", (d) => {
+      var paysX = 0;
+      var paysY = 0;
+
+      if (pays.indexOf(d) == 0) {
+        paysX = 60;
+      } else if (pays.indexOf(d) <= 7) {
+        paysX = d3
+          .scaleLinear()
+          .domain([0, 7])
+          .range([0, window.innerWidth - 90])(pays.indexOf(d));
+      } else if (pays.indexOf(d) == 8) {
+        paysX = 500;
+      } else if (pays.indexOf(d) == 12) {
+        paysX = window.innerWidth - 500;
+      } else {
+        paysX = d3
+          .scaleLinear()
+          .domain([9, 11])
+          .range([550, window.innerWidth - 550])(pays.indexOf(d));
+      }
+
+      if (pays.indexOf(d) <= 7) {
+        paysY = countryScale(0) + 100;
+      } else if (pays.indexOf(d) <= 8) {
+        paysY = countryScale(2);
+      } else if (pays.indexOf(d) == 12) {
+        paysY = countryScale(2);
+      } else {
+        paysY = countryScale(3) + 20;
+      }
+
+      return "translate(" + paysX + "," + paysY + ")";
+    })
+    .append("text")
+    .text((d) => d)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("color", "black");
 };
-export { updateForceAnnee };
+export { updateForcePays };

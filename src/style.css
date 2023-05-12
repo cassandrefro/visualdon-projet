@@ -25,6 +25,10 @@ h1 {
   font-size :20px;
   text-align :center;
 }
+
+.tick text {
+  font-size: 16px;
+}
  
 .close {
   float: right;

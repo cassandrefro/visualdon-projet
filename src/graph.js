@@ -30,7 +30,7 @@ function createGenderAgeCharts(filterGenre) {
 
   // créer un arc pour chaque tranche du graphique donut
   const pie = d3.pie().value((d) => d.count);
-  const arc = d3.arc().innerRadius(60).outerRadius(100);
+  const arc = d3.arc().innerRadius(80).outerRadius(100);
 
   // sélectionner le conteneur SVG pour les graphiques
   const svg = select(".graph")
@@ -53,15 +53,38 @@ function createGenderAgeCharts(filterGenre) {
     .attr("class", "arc");
   g.append("path")
     .attr("d", arc)
-    .attr("fill", (d) => (d.data.gender === "Female" ? "pink" : "blue"))
-    .attr("stroke", "white");
+    .attr("fill", (d) => (d.data.gender === "Female" ? "#FF78F0" : "#3C79F5"));
 
   // ajouter des étiquettes pour le nombre de femmes et d'hommes
   g.append("text")
-    .text((d) => d.data.count + "%")
-    .attr("transform", (d) => "translate(" + arc.centroid(d) + ")")
+    .text((d) => {
+      if (d.data.count) {
+        return d.data.count + "%";
+      }
+    })
+    //.attr("transform", (d) => "translate(" + arc.centroid(d) + ")")
+    .attr("transform", (d) => {
+      if (d.data.gender === "Female") {
+        console.log(arc.centroid(d));
+        return (
+          "translate(" +
+          (arc.centroid(d)[0] - 40) +
+          "," +
+          arc.centroid(d)[1] +
+          ")"
+        );
+      } else {
+        return (
+          "translate(" +
+          (arc.centroid(d)[0] + 40) +
+          "," +
+          arc.centroid(d)[1] +
+          ")"
+        );
+      }
+    })
     .attr("text-anchor", "middle")
-    .style("font-size", "20px");
+    .style("font-size", "16px");
 
   // ajouter au centre du graphique donut le nombre total de personnages
 
@@ -157,7 +180,9 @@ function createGenderAgeCharts(filterGenre) {
     .attr("y", (d) => yScale(d.count))
     .attr("width", 20)
     .attr("height", (d) => 200 - yScale(d.count))
-    .attr("fill", "#FFEEEE");
+    .attr("fill", "black") //#FFEEEE
+    .attr("rx", 10);
+  //.attr("stroke", "#A31ACB");
   // ajouter des labels en dessous des barres avec le nom de l'age au milieu de la barre
   svg
     .selectAll(".bar-label")
@@ -176,7 +201,12 @@ function createGenderAgeCharts(filterGenre) {
     })
     .attr("y", 220)
     .attr("text-anchor", "middle")
-    .text((d) => d.age);
+    .text((d) => d.age)
+    .style("fill", (d) => {
+      if (d.count == 0) {
+        return "lightgrey";
+      }
+    });
 
   // ajouter des labels au dessus des barres avec le nombre de personnages de cet age et que si le nombre est = a 0 ne pas afficher
   svg
@@ -198,7 +228,8 @@ function createGenderAgeCharts(filterGenre) {
       if (d.count > 0) {
         return d.count;
       }
-    });
+    })
+    .style("font-size", "14px");
   svg
     .style("opacity", 0)
     .transition()
