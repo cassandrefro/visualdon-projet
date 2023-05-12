@@ -1,132 +1,141 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
 
     <title>Document</title>
     <h1>Diversité des genres dans les jeux vidéo</h1>
     <style>
-   body {
-    background-color: white;
-    text-align: center;
-  }
-
-  /*afficher le titre de la page*/
-  h1 {
-    font-family: 'Roboto', sans-serif;
-    font-size: 45px;
-    color:black;
-    margin-top: 5%;
-  }
-
-  
-
-  p.paragraphe-1 {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    color: black;
-    margin-top: 5%;
-    margin-left: 25%;
-    margin-right: 25%;
-    text-align: justify;
-   
-  }
-  p.paragraphe-2 {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    color: black;
-
-    margin-left: 25%;
-    margin-right: 25%;
-    text-align: justify;
-    
-  }
-
-
-  * {
-  box-sizing: border-box;
-  &::before, &::after {
-    box-sizing: border-box;
-  }
-}
-
-
-button {
-  position: absolute;
-  bottom: 10%;
-  left: 45%;
-  display: inline-block;
-  cursor: pointer;
-  outline: none;
-  border: 0;
-  vertical-align: middle;
-  text-decoration: none;
-  font-size: 15px;
-  font-family: 'Roboto', sans-serif;
-  
-  &.learn-more {
-    font-weight: 600;
-    color: black;
-    text-transform: uppercase;
-    padding: 1.25em 2em;
-    background: #fff0f0;
-    border: 2px solid #b18597;
-    border-radius: 0.75em;
-    transform-style: preserve-3d;
-    transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
-   background 150ms cubic-bezier(0, 0, 0.58, 1);
-    &::before {
-      position: absolute;
-      content: '';
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #f9c4d2;
-      border-radius: inherit;
-      box-shadow: 0 0 0 2px #b18597, 0 0.625em 0 0 #ffe3e2;
-      transform: translate3d(0, 0.75em, -1em);
-      transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
-    }
-    &:hover {
-      background: #ffe9e9;
-      transform: translate(0, 0.25em);
-      &::before {
-        box-shadow: 0 0 0 2px #b18597, 0 0.5em 0 0 #ffe3e2;
-        transform: translate3d(0, 0.5em, -1em);
+      body {
+        background-color: white;
+        text-align: center;
       }
-    }
-    &:active {
-      background: #ffe9e9;
-      transform: translate(0em, 0.75em);
-      &::before {
-        box-shadow: 0 0 0 2px #b18597, 0 0 #ffe3e2;
-        transform: translate3d(0, 0, -1em);
+
+      /*afficher le titre de la page*/
+      h1 {
+        font-family: "Roboto", sans-serif;
+        font-size: 45px;
+        color: black;
+        margin-top: 5%;
       }
-    }
-  }
-}
- 
-  
+
+      p.paragraphe-1 {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        color: black;
+        margin-top: 5%;
+        margin-left: 25%;
+        margin-right: 25%;
+        text-align: justify;
+      }
+      p.paragraphe-2 {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        color: black;
+
+        margin-left: 25%;
+        margin-right: 25%;
+        text-align: justify;
+      }
+
+      * {
+        box-sizing: border-box;
+        &::before,
+        &::after {
+          box-sizing: border-box;
+        }
+      }
+
+      button {
+        position: absolute;
+        bottom: 10%;
+        left: 45%;
+        display: inline-block;
+        cursor: pointer;
+        outline: none;
+        border: 0;
+        vertical-align: middle;
+        text-decoration: none;
+        font-size: 15px;
+        font-family: "Roboto", sans-serif;
+
+        &.learn-more {
+          font-weight: 600;
+          color: black;
+          text-transform: uppercase;
+          padding: 1.25em 2em;
+          background: #fff0f0;
+          border: 2px solid #b18597;
+          border-radius: 0.75em;
+          transform-style: preserve-3d;
+          transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+            background 150ms cubic-bezier(0, 0, 0.58, 1);
+          &::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f9c4d2;
+            border-radius: inherit;
+            box-shadow: 0 0 0 2px #b18597, 0 0.625em 0 0 #ffe3e2;
+            transform: translate3d(0, 0.75em, -1em);
+            transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+              box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+          }
+          &:hover {
+            background: #ffe9e9;
+            transform: translate(0, 0.25em);
+            &::before {
+              box-shadow: 0 0 0 2px #b18597, 0 0.5em 0 0 #ffe3e2;
+              transform: translate3d(0, 0.5em, -1em);
+            }
+          }
+          &:active {
+            background: #ffe9e9;
+            transform: translate(0em, 0.75em);
+            &::before {
+              box-shadow: 0 0 0 2px #b18597, 0 0 #ffe3e2;
+              transform: translate3d(0, 0, -1em);
+            }
+          }
+        }
+      }
     </style>
   </head>
   <body>
-
     <button class="learn-more" onclick="redirectToGame()">PLAY</button>
 
     <script>
-    function redirectToGame() {
-    location.href = "genreDeJeux.html";
-    }
+      function redirectToGame() {
+        //alert(location.pathname);
+        location.pathname = "/genreDeJeux.html";
+      }
     </script>
 
-    <p class="paragraphe-1">Lorsqu'on parle de l'industrie du jeu vidéo, l'un des sujets les plus discutés est la représentation des femmes dans les jeux. Malgré les progrès significatifs réalisés ces dernières années en matière de diversité et d'inclusion, les femmes sont souvent sous-représentées ou mal représentées dans les jeux vidéo.
-     Dans ce jeu, nous souhaitons que vous exploriez la manière dont les femmes sont représentées dans les jeux vidéo. Vous allez examiner la diversité de genre dans les jeux, le nombre de personnages et bien plus, et comprendre par vous-même comment cette représentation a évolué au fil du temps.</p>
-     <p class="paragraphe-2">Nous allons également étudier si la représentation des femmes change en fonction du contexte ou des caractéristiques du jeu. Pour ce faire, nous vous invitons à commencer le jeu et à chercher des informations sur les personnages pour mieux comprendre comment la diversité des genres est représentée dans les jeux vidéo.
-     Nous espérons que ces visualisations vous permettront de mieux comprendre l'état actuel et de contribuer à une discussion plus large sur la diversité et l'inclusion dans l'industrie du jeu vidéo.</p>
-    
-  
+    <p class="paragraphe-1">
+      Lorsqu'on parle de l'industrie du jeu vidéo, l'un des sujets les plus
+      discutés est la représentation des femmes dans les jeux. Malgré les
+      progrès significatifs réalisés ces dernières années en matière de
+      diversité et d'inclusion, les femmes sont souvent sous-représentées ou mal
+      représentées dans les jeux vidéo. Dans ce jeu, nous souhaitons que vous
+      exploriez la manière dont les femmes sont représentées dans les jeux
+      vidéo. Vous allez examiner la diversité de genre dans les jeux, le nombre
+      de personnages et bien plus, et comprendre par vous-même comment cette
+      représentation a évolué au fil du temps.
+    </p>
+    <p class="paragraphe-2">
+      Nous allons également étudier si la représentation des femmes change en
+      fonction du contexte ou des caractéristiques du jeu. Pour ce faire, nous
+      vous invitons à commencer le jeu et à chercher des informations sur les
+      personnages pour mieux comprendre comment la diversité des genres est
+      représentée dans les jeux vidéo. Nous espérons que ces visualisations vous
+      permettront de mieux comprendre l'état actuel et de contribuer à une
+      discussion plus large sur la diversité et l'inclusion dans l'industrie du
+      jeu vidéo.
+    </p>
   </body>
 </html>

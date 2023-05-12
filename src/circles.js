@@ -1,13 +1,16 @@
 import { cleanData } from "./data";
 import * as d3 from "d3";
-import { updateCirclesAnnee, updateForceAnnee } from "./annee";
+import { updateForceAnnee, updateContraintesAnnee } from "./annee";
+import { openPopup } from "./popup";
+import { updateForcePays } from "./pays";
+import { updateForceGenre, updateContraintesGenre } from "./genre";
 
 const center = {
   x: window.innerWidth / 2,
   y: window.innerHeight / 2,
 };
 
-//function pour afficher
+//création des cercles liées aux données
 const updateCircles = (dataCircles, data, svg) => {
   const games = cleanData(data);
 
@@ -24,24 +27,23 @@ const updateCircles = (dataCircles, data, svg) => {
     .domain([minReview, maxReview])
     .range([minRadius, maxRadius]);
 
+  /** CREATION DES CERCLES **/
   svg
     .selectAll("circle")
     .data(dataCircles)
     .join(
       (enter) => enter.append("circle") //new circles
-
-      //.transition()
-      //.duration(1000),
-      //(update) => update.attr("fill", "white") //not new
-      //(exit) => exit.transition().duration(80).style("opacity", 0).remove()
     )
     .attr("r", (d) => radiusScale(d.review))
-    //.transition()
-    //.duration(80)
+    //contraintes de base
     .each((d) => {
-      d.x = Math.max(60, Math.min(window.innerWidth - 60, d.x));
-      d.y = Math.max(60, Math.min(window.innerHeight - 160, d.y));
+      d.x = Math.max(
+        radiusScale(d.review) + 20,
+        Math.min(window.innerWidth - radiusScale(d.review) - 30, d.x)
+      );
+      d.y = Math.max(60, Math.min(window.innerHeight - 180, d.y));
     })
+    //style des cercles
     .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
     .attr("fill", "white")
@@ -54,16 +56,57 @@ const updateCircles = (dataCircles, data, svg) => {
         (char) => char.Gender === "Female"
       ).length;
       if (numMale > numFemale) {
-        return "blue";
+        return "#3C79F5"; //blue
       } else if (numFemale > numMale) {
-        return "pink";
+        return "#FF78F0"; //pink
       } else {
-        return "purple";
+        return "#A31ACB"; //purple
       }
+    })
+    .attr("stroke-width", 1.5)
+    .on("click", function (event, d) {
+      openPopup(d, svg);
     });
-  return svg.selectAll("circle").data(dataCircles);
+
+  /** CREATION DES CERCLES NOIRS **/
+
+  // dans chaque cercle mettre un rond noir en fonction du nombre de femme dans l'équipe de devloppement du jeux si il y a un femme le rond est de taille 1 si 2 femme de taille 2 et ainsi de suite, si il y a pas de femme le rond est de taille 0
+  const femaleTeamCircles = svg
+    .selectAll("circle.game")
+    .data(dataCircles)
+    .enter()
+    .append("circle")
+    .attr("class", "game")
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
+    .attr("r", (d) => (d.femaleteam > 0 ? (d.femaleteam / d.team) * 20 : 0))
+    .attr("fill", "black")
+    .attr("stroke", "black")
+    .on("click", function (event, d) {
+      openPopup(d, svg);
+    });
+
+  femaleTeamCircles
+    .filter((d) => d.femaleteam > 0)
+    .raise()
+    .attr("stroke-width", 2);
 };
 
+//contraintes du bord
+const updateContraintes = (dataCircles, radiusScale, svg) => {
+  svg
+    .selectAll("circle")
+    .data(dataCircles)
+    .each((d) => {
+      d.x = Math.max(
+        radiusScale(d.review) + 20,
+        Math.min(window.innerWidth - radiusScale(d.review) - 30, d.x)
+      );
+      d.y = Math.max(60, Math.min(window.innerHeight - 160, d.y));
+    });
+};
+
+//A chaque mvmt de bulle on appelle cette fonction
 const updateForce = (category, dataCircles, data, svg) => {
   const games = cleanData(data);
 
@@ -80,100 +123,65 @@ const updateForce = (category, dataCircles, data, svg) => {
     .domain([minReview, maxReview])
     .range([minRadius, maxRadius]);
 
-  //** pays **/
-  const pays = [...new Set(games.map((game) => game.country))].sort();
+  //** ENLEVER TOUT LABEL OR AXIS **//
+  svg.select(".yearAxis").style("display", "none");
+  svg.selectAll(".labels").remove();
 
-  const countryScale = d3
-    .scaleLinear()
-    .domain([0, pays.length - 1])
-    .range([60, window.innerWidth - 60]);
-
-  //** YEAR AXIS **//
-
-  if (category != "Année") {
-    svg.select(".yearAxis").style("display", "none");
-  } else {
+  if (category == "Année") {
     svg.select(".yearAxis").style("display", "block").style("z-index", "1000");
-    //updateCirclesAnnee(games, svg);
   }
 
   //** FORCE **/
+  const simulation = d3.forceSimulation(dataCircles); //force de base
 
-  const simulation = d3
-    //force de base
-    .forceSimulation(dataCircles);
-  //position selon la catégorie -> import
+  //mouvement selon la catégorie -> import
   switch (category) {
     case "Année":
       updateForceAnnee(simulation, games);
       break;
     case "Pays":
-      console.log(dataCircles);
-      simulation
-        .force(
-          "x",
-          d3
-            .forceX()
-            .x((d) => {
-              //console.log(countryScale(pays.indexOf(d.country)));
-              /*console.log(
-              d.country,
-              ((pays.indexOf(d.country) + 1) % 2) * 300 + 100
-            );*/
-              return countryScale(pays.indexOf(d.country));
-            })
-            .strength(0.2)
-        )
-        .force(
-          "y",
-          d3
-            .forceY()
-            .y(() => center.y) //((pays.indexOf(d.country) + 1) % 2) * window.innerHeight)
-            .strength(0.05)
-        );
+      updateForcePays(simulation, games, svg);
       break;
     case "Genre":
-      simulation
-        .force("x", d3.forceX(center.x).strength(0.1))
-        .force("y", d3.forceY(center.y).strength(0.1));
-
+      updateForceGenre(simulation, games, svg);
       break;
 
-    case "transition":
+    case "transition": //mouvement des bulles quand on affiche les graphs
       simulation
         .force("x", d3.forceX(200).strength(0.1))
-        .force("y", d3.forceY(center.y).strength(0.1));
+        .force("y", d3.forceY(center.y - 60).strength(0.2));
       break;
 
     default:
-      simulation
-        //.force("charge", d3.forceManyBody().strength(10))
-        .force("center", d3.forceCenter(center.x, center.y));
       break;
   }
-  simulation /*.force("charge", d3.forceManyBody().strength(10))*/
-    .force(
-      "collide",
-      d3.forceCollide().radius((d) => {
-        return radiusScale(d.review);
-      })
-    );
 
+  //Eviter que les cercles ne se chevauchent
+  simulation.force(
+    "collide",
+    d3.forceCollide().radius((d) => {
+      return radiusScale(d.review);
+    })
+  );
+
+  //On arrête tout mouvement avant de recommencer un autre
   //simulation.stop();
+
   for (let i = 0; i < 120; i++) {
     simulation.on("tick", () => {
+      //On met à jour les nouvelles positions des cercles
       updateCircles(dataCircles, data, svg);
-      /*node.each((d) => {
-        if (d.country === "USA") {
-          d.x = Math.max(
-            window.innerWidth - 100,
-            Math.min(window.innerWidth - 60, d.x)
-          );
-          //d.y = Math.max(minY, Math.min(maxY, d.y));
-        }
-      });*/
+
+      //On met à jour les nouvelles contraintes de position qui aident à positionner correctement
+
+      //updateContraintes(dataCircles, radiusScale, svg); //contraintes bords
+      if (category == "Genre") {
+        updateContraintesGenre(dataCircles, svg);
+      } else if (category == "Année") {
+        updateContraintesAnnee(dataCircles, radiusScale, svg);
+      }
     });
     simulation.alpha(1).restart();
   }
 };
-export { updateCircles, updateForce };
+export { updateCircles, updateForce, updateContraintes };
