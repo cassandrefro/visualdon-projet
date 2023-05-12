@@ -30,11 +30,11 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   d3.select("body")
     .append("button")
     .style("position", "absolute")
-    .style("top", "5%")
-    .style("left", "5%")
+    .style("top", "60px")
+    .style("left", "60px")
     .text("Accueil")
     .on("click", () => {
-      d3.select(this).classed("active", true);
+      //d3.select(this).classed("active", true);
       location.href = "index.html";
     });
 
@@ -190,6 +190,13 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
             .transition()
             .duration(400)
             .style("opacity", 1);
+        })
+
+        .on("mouseover", (e) => {
+          d3.select(e.target).classed("hover", true);
+        })
+        .on("mouseout", (e) => {
+          d3.select(e.target).classed("hover", false);
         });
     });
 
@@ -201,8 +208,40 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       .on("click", function () {
         footer.selectAll("button").classed("active", false);
         d3.select(this).classed("active", true);
-        //alert(d3.select(this).text());
-        //recupere classe active dans header -> updateForce(classeActive,...)
+
+        //recupere classe active dans header -> updateForce(categoryActive,...)
+        const categoryActive = d3.select(".active").text();
+
+        //On rend le bloc des graphiques transparent
+        d3.select(".graph").transition().duration(400).style("opacity", 0);
+
+        //Si le bloc existe encore, on le désactive
+        if (
+          window
+            .getComputedStyle(document.querySelector(".graph"))
+            .getPropertyValue("display") != "none"
+        ) {
+          setTimeout(() => {
+            d3.select(".graph").style("display", "none");
+
+            //On affiche toutes les données games après que les graphs disparaissent
+            dataCircles = games;
+            updateCircles(dataCircles, data, svg);
+            updateForce(categoryActive, dataCircles, data, svg);
+          }, 400);
+        } else {
+          //S'il n'y a pas de graph, on affiche toutes les données games sans attendre
+          dataCircles = games;
+          updateCircles(dataCircles, data, svg);
+
+          updateForce(categoryActive, dataCircles, data, svg);
+        }
+      })
+      .on("mouseover", (e) => {
+        d3.select(e.target).classed("hover", true);
+      })
+      .on("mouseout", (e) => {
+        d3.select(e.target).classed("hover", false);
       });
   };
 
@@ -255,10 +294,24 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   const closeButton = document.getElementById("close-button");
 
   d3.select("#black-circle")
-    .style("position", "absolute")
-    .style("top", "5%")
-    .style("right", "5%")
-    //.style("transform", "translate(-50%, -50%)")
+    //.style("position", "absolute")
+    //.style("top", "5%")
+    //.style("right", "5%")
+    //.style("transform", "translate(50%, -50%)")
+    .on("mouseover", () => {
+      d3.select("#black-circle")
+        .style("background-color", "black")
+        .style("color", "white")
+        //border-radius:50%;
+        //.style("border-radius", "4px")
+        .style("box-shadow", "-1px 1px 3px 4px rgba(0,0,0,0.2)");
+    })
+    .on("mouseout", () => {
+      d3.select("#black-circle")
+        .style("background-color", "white")
+        .style("color", "black")
+        .style("box-shadow", "none");
+    })
     .on("click", () => {
       /*
     popupLegend.style.top = blackCircle.offsetTop + "px";
@@ -268,10 +321,10 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       d3.select("#popup-legendes")
         .style("display", "block")
         .style("z-index", 1000)
-        .style("position", "absolute")
-        .style("top", "50%")
-        .style("right", "50%")
-        .style("transform", "translate(-50%, -50%)");
+        .style("position", "absolute");
+      //.style("top", "120px")
+      //.style("right", "120px");
+      //.style("transform", "translate(-50%, -50%)");
 
       //mettre le titre du popup
       d3.select("#popup-legendes h2")
@@ -390,6 +443,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         );
 
       d3.select(this).attr("stroke-width", 5);
+      d3.select(this).style("box-shadow", "-1px 1px 3px 4px rgba(0,0,0,0.2)");
     })
     .on("mouseout", function () {
       // Supprime l'info-bulle
@@ -398,29 +452,13 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         tooltip = null;
       }
       d3.select(this).attr("stroke-width", 1.5);
+      d3.select(this).style("box-shadow", "none");
     });
-
-  /*svg
-    .selectAll("circle")
-    .on("mouseover", function (event, d) {
-      const x = event.pageX;
-      const y = event.pageY;
-      d3.select("body")
-        .append("div")
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("top", y + "px")
-        .style("left", x + "px")
-        .html(d.Title + "<br>Nombre de personnages: " + d.characters.length);
-    })
-    .on("mouseout", function () {
-      d3.select(".tooltip").remove();
-    });*/
 
   // lors d'un hover sur un sous genre de jeux les cercles qui lui correspodend sont plus epais et les autres a leur epaisseur d'origine
   select(".footer button").on("mouseover", (e, d) => {
     //const subGenre = d3.select(this).text();
-    alert(e.target.html());
+    //alert(e.target.html());
     svg
       .selectAll("circle")
       .filter((d) => d.genre === subGenre)
@@ -435,6 +473,15 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       svg.selectAll("circle").attr("stroke-width", 1.5);
     });
   });
+
+  //hover sur tous les boutons
+  d3.selectAll("button")
+    .on("mouseover", (e) => {
+      d3.select(e.target).classed("hover", true);
+    })
+    .on("mouseout", (e) => {
+      d3.select(e.target).classed("hover", false);
+    });
 
   /*
 
