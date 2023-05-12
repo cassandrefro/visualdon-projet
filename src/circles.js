@@ -41,7 +41,7 @@ const updateCircles = (dataCircles, data, svg) => {
         radiusScale(d.review) + 20,
         Math.min(window.innerWidth - radiusScale(d.review) - 30, d.x)
       );
-      d.y = Math.max(60, Math.min(window.innerHeight - 160, d.y));
+      d.y = Math.max(60, Math.min(window.innerHeight - 180, d.y));
     })
     //style des cercles
     .attr("cx", (d) => d.x)

@@ -63,7 +63,7 @@ const updateForceGenre = (simulation, games, svg) => {
         "translate(" +
         newPositionsX[genre.indexOf(d)] +
         "," +
-        (window.innerHeight - 190) +
+        (window.innerHeight - 210) +
         ")"
     )
     .append("text")
@@ -87,7 +87,7 @@ const updateContraintesGenre = (dataCircles, svg) => {
           Math.min(window.innerWidth - 60, d.x)
         );
       }
-      d.y = Math.max(60, Math.min(window.innerHeight - 260, d.y));
+      d.y = Math.max(60, Math.min(window.innerHeight - 280, d.y));
     });
 };
 

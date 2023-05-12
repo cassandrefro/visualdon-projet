@@ -1,8 +1,9 @@
 import * as d3 from "d3";
 
 const openPopup = (d, svg) => {
-  d3.select(".popup").style("display", "block").style("z-index", 1000);
+  d3.select(".popup").style("display", "block").style("z-index", 900);
   svg.style("opacity", 0.5);
+  //document.querySelector(".graph").style("opacity", 0.5);
   d3.select(".popup h1").text(d.Title);
 
   // Sélectionne l'élément img dans la popup
@@ -62,18 +63,29 @@ const openPopup = (d, svg) => {
 
   d3.select(".personnages").html(""); // Supprime tous les éléments enfants de la classe "personnages"
 
-  const characters = d.characters.slice(0, 10);
+  //const characters = d.characters.slice(0, 10);
   const svg4 = d3
     .select(".personnages")
     .append("svg")
     .attr("width", 400)
     .attr("height", 50);
 
-  const maleCharacters = characters.filter((d) => d.Gender === "Male");
-  const femaleCharacters = characters.filter((d) => d.Gender === "Female");
-  const sortedCharacters = d3
-    .merge([femaleCharacters, maleCharacters])
-    .sort((b, a) => a.Gender.localeCompare(b.Gender));
+  const maleCharacters = d.characters.filter((d) => d.Gender === "Male");
+  const femaleCharacters = d.characters.filter((d) => d.Gender === "Female");
+  const totalCharacters = maleCharacters.length + femaleCharacters.length;
+  const numMaleCircles = Math.round(
+    (maleCharacters.length / totalCharacters) * 10
+  );
+  const numFemaleCircles = Math.round(
+    (femaleCharacters.length / totalCharacters) * 10
+  );
+  const sortedCharacters = [];
+  for (let i = 0; i < numFemaleCircles; i++) {
+    sortedCharacters.push({ Gender: "Female" });
+  }
+  for (let i = 0; i < numMaleCircles; i++) {
+    sortedCharacters.push({ Gender: "Male" });
+  }
 
   const personnage = svg4
     .selectAll("g")
@@ -86,12 +98,6 @@ const openPopup = (d, svg) => {
     .append("circle")
     .attr("r", 9)
     .attr("fill", (d) => (d.Gender === "Male" ? "blue" : "pink"));
-
-  personnage
-    .append("circle")
-    .attr("r", 5)
-    .attr("fill", (d) => (d.Gender === "Male" ? "blue" : "pink"))
-    .attr("cy", -14);
 
   console.log(sortedCharacters);
 

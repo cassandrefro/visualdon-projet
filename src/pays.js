@@ -100,7 +100,7 @@ const updateForcePays = (simulation, games, svg) => {
       } else if (pays.indexOf(d) == 12) {
         paysY = countryScale(2);
       } else {
-        paysY = countryScale(3) + 20;
+        paysY = countryScale(3) + 15;
       }
 
       return "translate(" + paysX + "," + paysY + ")";

@@ -27,7 +27,16 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   /** AJOUT SECTIONS DANS LE DOM **/
 
   //Ajout boutton home
-  d3.select("body").append("button").style("position", "absolute").text("HOME");
+  d3.select("body")
+    .append("button")
+    .style("position", "absolute")
+    .style("top", "5%")
+    .style("left", "5%")
+    .text("Accueil")
+    .on("click", () => {
+      d3.select(this).classed("active", true);
+      location.href = "index.html";
+    });
 
   /** TAILLE DU TITRE + HEADER BUTTONS = 60 **/
 
@@ -55,7 +64,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .select("body")
     .append("svg")
     .attr("width", window.innerWidth - 8)
-    .attr("height", window.innerHeight - 160)
+    .attr("height", window.innerHeight - 180)
     .style("background-color", "white");
 
   //Ajout svg graph
@@ -68,7 +77,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     .attr("width", "900px")
     .attr("height", "400px")
     .style("position", "absolute")
-    .style("top", "50%")
+    .style("top", "55%")
     .style("left", "35%")
     .style("transform", "translate(0, -50%)")
     .style("border", "1px #929292 ")
@@ -143,6 +152,9 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         .append("button")
         .text(subCategory)
         .on("click", function () {
+          footer.selectAll("button").classed("active", false);
+          d3.select(this).classed("active", true);
+
           //on cache les labels
           svg.selectAll(".labels").remove();
 
@@ -180,18 +192,33 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
             .style("opacity", 1);
         });
     });
+
+    /** AFFICHAGE DANS FOOTER du bouton permettant de revenir a l'affichage de tous les jeux **/
+    footer.append("div").style("margin-left", "30px");
+    footer
+      .append("button")
+      .text("Tout")
+      .on("click", function () {
+        footer.selectAll("button").classed("active", false);
+        d3.select(this).classed("active", true);
+        //alert(d3.select(this).text());
+        //recupere classe active dans header -> updateForce(classeActive,...)
+      });
   };
 
   //affichage par défaut: année
   updateFooter("Année");
 
-  /** AFFICHAGE BUTTONS DANS HEADER AVEC FOOTER CORRESPONDANT**/
-
+  //AFFICHAGE BUTTONS DANS HEADER AVEC FOOTER CORRESPONDANT
   Object.keys(categories).forEach((categoryKey) => {
     header
       .append("button")
+      .attr("class", categoryKey)
       .text(categoryKey)
       .on("click", function () {
+        header.selectAll("button").classed("active", false);
+        d3.select(this).classed("active", true);
+
         //On update les boutons dans le footer
         updateFooter(categoryKey);
 
@@ -219,6 +246,111 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
           updateForce(categoryKey, dataCircles, data, svg);
         }
       });
+  });
+  header.select(".Année").classed("active", true);
+
+  //** AFFICHAGE BOUTON LEGENDE **/
+  const blackCircle = document.getElementById("black-circle");
+  const popupLegend = document.getElementById("popup-legendes");
+  const closeButton = document.getElementById("close-button");
+
+  d3.select("#black-circle")
+    .style("position", "absolute")
+    .style("top", "5%")
+    .style("right", "5%")
+    //.style("transform", "translate(-50%, -50%)")
+    .on("click", () => {
+      /*
+    popupLegend.style.top = blackCircle.offsetTop + "px";
+    popupLegend.style.left = blackCircle.offsetLeft + "px";
+    popupLegend.style.display = "block";*/
+
+      d3.select("#popup-legendes")
+        .style("display", "block")
+        .style("z-index", 1000)
+        .style("position", "absolute")
+        .style("top", "50%")
+        .style("right", "50%")
+        .style("transform", "translate(-50%, -50%)");
+
+      //mettre le titre du popup
+      d3.select("#popup-legendes h2")
+        .text("Légendes")
+        .style("text-align", "center");
+      //centrer le titre du popup
+
+      d3.select(".cercle-jeux")
+        .text("1 cercle = 1 jeu")
+        .insert("img", "p")
+        .attr("src", "img/cercle.png");
+      d3.select(".cercle-jeux").style("text-align", "center");
+      //d3.select(".cercle-jeux").style("display", "flex");
+      // placer l'image au dessus du texte
+      d3.select(".cercle-jeux img")
+        .style("display", "block")
+        .style("margin", "0 auto");
+
+      d3.select(".taille-cercle")
+        .text("Taille cercle : note / popularité du jeu")
+        .insert("img", "p")
+        .attr("src", "img/taille.png");
+      d3.select(".taille-cercle").style("text-align", "center");
+      //d3.select(".cercle-jeux").style("display", "flex");
+      // placer l'image au dessus du texte
+      d3.select(".taille-cercle img")
+        .style("display", "block")
+        .style("margin", "0 auto");
+
+      d3.select(".couleur")
+        // .text(
+        //   "Les couleurs représentent les personnages masculins et féminins dans le jeu : bleu pour les hommes, rose pour les femmes et violet pour les jeux mixtes."
+        // )
+        .html(
+          "Genre des personnages dans le jeu :<br>Bleu : Majorité de personnages masculins <br>Rose : Majorité de personnages féminins <br>Violet : Parité des genres"
+        )
+        .insert("img", "p")
+        .attr("src", "img/couleur.png");
+      d3.select(".couleur").style("text-align", "center");
+      //d3.select(".cercle-jeux").style("display", "flex");
+      // placer l'image au dessus du texte
+      d3.select(".couleur img")
+        .style("display", "block")
+        .style("margin", "0 auto");
+
+      d3.select(".rond-noir")
+        .text(
+          "Taille point noir: # de femmes dans l'équipe de développement du jeu."
+        )
+        .insert("img", "p")
+        .attr("src", "img/rondNoir.png");
+      d3.select(".rond-noir").style("text-align", "center");
+      // placer l'image au dessus du texte
+      d3.select(".rond-noir img")
+        .style("display", "block")
+        .style("margin", "0 auto");
+
+      d3.select(".personnage")
+        .text(
+          "Les personnages présents sont les personnages importants dans l'histoire du jeu."
+        )
+        .insert("img", "p")
+        .attr("src", "img/personnage.png");
+      d3.select(".personnage").style("text-align", "center");
+      // placer l'image au dessus du texte
+      d3.select(".personnage img")
+        .style("display", "block")
+        .style("margin", "0 auto");
+    });
+
+  closeButton.addEventListener("click", () => {
+    popupLegend.style.display = "none";
+    // faire disparaitre le texte
+    // faire disparaitre le cercle
+    d3.select("#popup-legendes svg").remove();
+
+    //faire disparaître le rond noir
+    d3.select(".rond-noir p").remove();
+    d3.select(".rond-noir svg").remove();
   });
 
   //** HOVER **/
@@ -257,7 +389,7 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
             "</span>"
         );
 
-      d3.select(this).attr("stroke-width", 3);
+      d3.select(this).attr("stroke-width", 5);
     })
     .on("mouseout", function () {
       // Supprime l'info-bulle

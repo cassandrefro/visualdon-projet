@@ -98,7 +98,7 @@ function createGenderAgeCharts(filterGenre) {
     .html(total)
     .attr("transform", "translate(0, -10)")
     .attr("text-anchor", "middle")
-    .style("font-size", "20px");
+    .style("font-size", "30px");
 
   const charUnknowwTab = [];
   const charAdultTab = [];
