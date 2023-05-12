@@ -64,5 +64,78 @@ h1 {
 
 }
 
+#black-circle {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -100px;
+  right: 100px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: black;
+  border: 2px solid black;
+}
 
+#black-circle:before {
+  content : "i";
+}
+
+#black-circle::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  border-width: 30px;
+  border-style: solid;
+  border-color: transparent transparent white white;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+#popup-legendes {
+display: none;
+position: absolute;
+top: 50%;
+left: 80%;
+padding: 20px;
+width: 300px;
+height: 480px;
+background-color: white;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+border-radius: 5px;
+transform: translate(-50%, -50%) translateX(-10%);
+}
+
+
+
+#close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2;
+}
+
+
+button.active {
+  background-color: black;
+  color: white;
+}
+
+
+button {
+  background-color: #f9f9f9;
+  border: none;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 
