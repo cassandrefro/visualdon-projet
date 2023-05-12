@@ -44,8 +44,6 @@ const updateCircles = (dataCircles, data, svg) => {
       d.y = Math.max(60, Math.min(window.innerHeight - 180, d.y));
     })
     //style des cercles
-    .attr("cx", (d) => d.x)
-    .attr("cy", (d) => d.y)
     .attr("fill", "white")
     .attr("stroke", (d) => {
       const characters = d.characters;
@@ -77,8 +75,6 @@ const updateCircles = (dataCircles, data, svg) => {
     .enter()
     .append("circle")
     .attr("class", "game")
-    .attr("cx", (d) => d.x)
-    .attr("cy", (d) => d.y)
     .attr("r", (d) => (d.femaleteam > 0 ? (d.femaleteam / d.team) * 20 : 0))
     .attr("fill", "black")
     .attr("stroke", "black")
@@ -171,6 +167,17 @@ const updateForce = (category, dataCircles, data, svg) => {
     simulation.on("tick", () => {
       //On met à jour les nouvelles positions des cercles
       updateCircles(dataCircles, data, svg);
+
+      svg
+        .selectAll("circle")
+        .data(dataCircles)
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y);
+
+      svg
+        .selectAll("circle.game")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y);
 
       //On met à jour les nouvelles contraintes de position qui aident à positionner correctement
 
