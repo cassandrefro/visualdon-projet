@@ -75,7 +75,7 @@ const updateCircles = (dataCircles, data, svg) => {
     .enter()
     .append("circle")
     .attr("class", "game")
-    .attr("r", (d) => (d.femaleteam > 0 ? (d.femaleteam / d.team) * 20 : 0))
+    .attr("r", (d) => (d.femaleteam > 0 ? (d.femaleteam / d.team) * 15 + 2 : 0))
     .attr("fill", "black")
     .attr("stroke", "black")
     .on("click", function (event, d) {
