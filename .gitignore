@@ -1,5 +1,5 @@
 # Ignore npm config.
-/dist
+# /dist
 /node_modules
 /.parcel-cache
 
