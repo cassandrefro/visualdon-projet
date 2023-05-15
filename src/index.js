@@ -456,28 +456,32 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
     });
 
   // lors d'un hover sur un sous genre de jeux les cercles qui lui correspodend sont plus epais et les autres a leur epaisseur d'origine
-  select(".footer button").on("mouseover", (e, d) => {
-    //const subGenre = d3.select(this).text();
-    //alert(e.target.html());
-    svg
-      .selectAll("circle")
-      .filter((d) => d.genre === subGenre)
-      .attr("stroke-width", 3);
-    svg
-      .selectAll("circle")
-      .filter((d) => d.genre !== subGenre)
-      .attr("stroke-width", 1);
-    // quand la souris sort du bouton on remet tout a l'epaisseur d'origine
 
-    subGenreButtons.selectAll("button").on("mouseout", function () {
-      svg.selectAll("circle").attr("stroke-width", 1.5);
-    });
-  });
+  //const subGenre = d3.select(this).text();
+  //alert("test");
+  /*svg
+        .selectAll("circle")
+        .filter((d) => d.genre === subGenre)
+        .attr("stroke-width", 3);
+      svg
+        .selectAll("circle")
+        .filter((d) => d.genre !== subGenre)
+        .attr("stroke-width", 1);*/
+  // quand la souris sort du bouton on remet tout a l'epaisseur d'origine
+
+  //svg.selectAll("circle").attr("stroke-width", 1.5);
 
   //hover sur tous les boutons
   d3.selectAll("button")
     .on("mouseover", (e) => {
       d3.select(e.target).classed("hover", true);
+      svg.selectAll("circle").filter((data, i) => {
+        // d.genre === e.target.textContent ||
+        //data.release.getFullYear() === e.target.textContent; //||
+        //d.country === e.target.textContent
+        i === 0;
+      });
+      //.attr("stroke-width", 5);
     })
     .on("mouseout", (e) => {
       d3.select(e.target).classed("hover", false);
