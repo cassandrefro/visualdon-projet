@@ -125,3 +125,5 @@ Wireframe : https://github.com/cassandrefro/visualdon-projet/blob/main/Wireframe
 **Références :** Qui d'autre dans le web ou dans la recherche a utilisé ces données ? Dans quel but ?
 
 Les journalistes de jeux vidéos analysent ces données dans le but de sensibiliser et promouvoir les femmes dans les jeux vidéos.
+
+**Déploiement du site sur netlify :** https://diversity-in-video-games.netlify.app/
