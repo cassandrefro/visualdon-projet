@@ -289,7 +289,6 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
   header.select(".Année").classed("active", true);
 
   //** AFFICHAGE BOUTON LEGENDE **/
-  const blackCircle = document.getElementById("black-circle");
   const popupLegend = document.getElementById("popup-legendes");
   const closeButton = document.getElementById("close-button");
 
@@ -313,18 +312,10 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         .style("box-shadow", "none");
     })
     .on("click", () => {
-      /*
-    popupLegend.style.top = blackCircle.offsetTop + "px";
-    popupLegend.style.left = blackCircle.offsetLeft + "px";
-    popupLegend.style.display = "block";*/
-
       d3.select("#popup-legendes")
         .style("display", "block")
         .style("z-index", 1000)
         .style("position", "absolute");
-      //.style("top", "120px")
-      //.style("right", "120px");
-      //.style("transform", "translate(-50%, -50%)");
 
       //mettre le titre du popup
       d3.select("#popup-legendes h2")
@@ -333,28 +324,31 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
       //centrer le titre du popup
 
       d3.select(".cercle-jeux")
+        .style("display", "flex")
         .text("1 cercle = 1 jeu")
         .insert("img", "p")
         .attr("src", "img/cercle.png");
-      d3.select(".cercle-jeux").style("text-align", "center");
+      d3.select(".cercle-jeux").style("text-align", "left");
       //d3.select(".cercle-jeux").style("display", "flex");
       // placer l'image au dessus du texte
       d3.select(".cercle-jeux img")
-        .style("display", "block")
-        .style("margin", "0 auto");
+        .style("display", "flex")
+        .style("margin", "auto");
 
       d3.select(".taille-cercle")
-        .text("Taille cercle : note / popularité du jeu")
+        .style("display", "flex")
+        .html("Taille des cercles : <br>note / popularité du jeu")
         .insert("img", "p")
         .attr("src", "img/taille.png");
-      d3.select(".taille-cercle").style("text-align", "center");
+      d3.select(".taille-cercle").style("text-align", "left");
       //d3.select(".cercle-jeux").style("display", "flex");
       // placer l'image au dessus du texte
       d3.select(".taille-cercle img")
-        .style("display", "block")
-        .style("margin", "0 auto");
+        .style("display", "flex")
+        .style("margin", "auto");
 
       d3.select(".couleur")
+        .style("display", "flex")
         // .text(
         //   "Les couleurs représentent les personnages masculins et féminins dans le jeu : bleu pour les hommes, rose pour les femmes et violet pour les jeux mixtes."
         // )
@@ -363,36 +357,39 @@ csv("/data/dataGenderRepresentation.csv").then(function (data) {
         )
         .insert("img", "p")
         .attr("src", "img/couleur.png");
-      d3.select(".couleur").style("text-align", "center");
+      d3.select(".couleur").style("text-align", "left");
       //d3.select(".cercle-jeux").style("display", "flex");
       // placer l'image au dessus du texte
       d3.select(".couleur img")
-        .style("display", "block")
-        .style("margin", "0 auto");
+        .style("display", "flex")
+        .style("margin", "auto")
+        .style("padding-left", "10px");
 
       d3.select(".rond-noir")
-        .text(
-          "Taille point noir: # de femmes dans l'équipe de développement du jeu."
+        .style("display", "flex")
+        .html(
+          "Taille des points noirs : <br># de femmes dans l'équipe <br>de développement du jeu."
         )
         .insert("img", "p")
         .attr("src", "img/rondNoir.png");
-      d3.select(".rond-noir").style("text-align", "center");
+      d3.select(".rond-noir").style("text-align", "left");
       // placer l'image au dessus du texte
       d3.select(".rond-noir img")
-        .style("display", "block")
+        .style("display", "flex")
         .style("margin", "0 auto");
 
       d3.select(".personnage")
-        .text(
-          "Les personnages présents sont les personnages importants dans l'histoire du jeu."
+        .style("display", "flex")
+        .html(
+          "Personnages présents : <br>personnages importants <br>dans l'histoire du jeu."
         )
         .insert("img", "p")
         .attr("src", "img/personnage.png");
-      d3.select(".personnage").style("text-align", "center");
+      d3.select(".personnage").style("text-align", "left");
       // placer l'image au dessus du texte
       d3.select(".personnage img")
-        .style("display", "block")
-        .style("margin", "0 auto");
+        .style("display", "flex")
+        .style("margin", "auto");
     });
 
   closeButton.addEventListener("click", () => {
